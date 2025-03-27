@@ -49,7 +49,11 @@ export default function TeamMaker() {
       .from('players')
       .select('*')
       .order('name');
-    if (data) setPlayers(data);
+    if (data) {
+      // 한글 이름 기준으로 정렬
+      const sortedData = data.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+      setPlayers(sortedData);
+    }
   };
 
   const handleSelectPlayer = (player: Player) => {
