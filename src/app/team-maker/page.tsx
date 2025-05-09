@@ -125,12 +125,8 @@ export default function TeamMaker() {
       }))
     ];
     
-    // 등급 기준으로 정렬 (A가 가장 높은 등급)
-    allParticipants.sort((a, b) => {
-      if (a.grade < b.grade) return -1;
-      if (a.grade > b.grade) return 1;
-      return 0;
-    });
+    // 이름 가나다순으로 정렬
+    allParticipants.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
     
     // 섞기 횟수에 따라 같은 등급 내에서 플레이어 순서를 랜덤하게 섞기
     if (shuffleCount > 0) {
@@ -415,17 +411,20 @@ export default function TeamMaker() {
                         {String.fromCharCode(65 + index)}팀
                       </h3>
                       <ul className="space-y-2">
-                        {team.map((participant: Participant) => (
-                          <li 
-                            key={participant.id} 
-                            className={`py-2 px-4 ${participant.isGuest ? 'text-blue-600' : ''}`}
-                          >
-                            <div className="flex justify-between">
-                              <span>{participant.name}</span>
-                              <span className="invisible">여백 확보</span>
-                            </div>
-                          </li>
-                        ))}
+                        {team
+                          .slice()
+                          .sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+                          .map((participant: Participant) => (
+                            <li 
+                              key={participant.id} 
+                              className={`py-2 px-4 ${participant.isGuest ? 'text-blue-600' : ''}`}
+                            >
+                              <div className="flex justify-between">
+                                <span>{participant.name}</span>
+                                <span className="invisible">여백 확보</span>
+                              </div>
+                            </li>
+                          ))}
                       </ul>
                     </div>
                   ))}
@@ -461,14 +460,17 @@ export default function TeamMaker() {
                         {String.fromCharCode(65 + index)}팀
                       </h3>
                       <ul className="space-y-1">
-                        {team.map((participant: Participant) => (
-                          <li 
-                            key={participant.id} 
-                            className={`py-1 px-2 ${participant.isGuest ? 'text-blue-600' : ''}`}
-                          >
-                            {participant.name}
-                          </li>
-                        ))}
+                        {team
+                          .slice()
+                          .sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+                          .map((participant: Participant) => (
+                            <li 
+                              key={participant.id} 
+                              className={`py-1 px-2 ${participant.isGuest ? 'text-blue-600' : ''}`}
+                            >
+                              {participant.name}
+                            </li>
+                          ))}
                       </ul>
                     </div>
                   ))}
