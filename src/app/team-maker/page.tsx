@@ -125,8 +125,13 @@ export default function TeamMaker() {
       }))
     ];
     
-    // 이름 가나다순으로 정렬
-    allParticipants.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    // 이름 가나다순으로 정렬 (게스트는 항상 맨 아래)
+    const isGuestName = (name: string) => name.startsWith('게스트');
+    allParticipants.sort((a, b) => {
+      if (isGuestName(a.name) && !isGuestName(b.name)) return 1;
+      if (!isGuestName(a.name) && isGuestName(b.name)) return -1;
+      return a.name.localeCompare(b.name, 'ko');
+    });
     
     // 섞기 횟수에 따라 같은 등급 내에서 플레이어 순서를 랜덤하게 섞기
     if (shuffleCount > 0) {
@@ -308,7 +313,7 @@ export default function TeamMaker() {
                   key={guest.id} 
                   className="bg-blue-50 px-3 py-2 rounded-lg flex items-center gap-2"
                 >
-                  <span>{guest.name} ({guest.grade})</span>
+                  <span>{guest.name}</span>
                   <button 
                     onClick={() => removeGuest(guest.id)}
                     className="text-red-500 hover:text-red-700"
@@ -411,20 +416,26 @@ export default function TeamMaker() {
                         {String.fromCharCode(65 + index)}팀
                       </h3>
                       <ul className="space-y-2">
-                        {team
-                          .slice()
-                          .sort((a, b) => a.name.localeCompare(b.name, 'ko'))
-                          .map((participant: Participant) => (
-                            <li 
-                              key={participant.id} 
-                              className={`py-2 px-4 ${participant.isGuest ? 'text-blue-600' : ''}`}
-                            >
-                              <div className="flex justify-between">
-                                <span>{participant.name}</span>
-                                <span className="invisible">여백 확보</span>
-                              </div>
-                            </li>
-                          ))}
+                        {(() => {
+                          const normal = team.filter(p => !p.isGuest).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+                          const guestsInOrder = guests
+                            .map(g => team.find(p => p.isGuest && p.name === g.name))
+                            .filter(Boolean);
+                          return [...normal, ...guestsInOrder].map((participant) => {
+                            const p = participant as Participant;
+                            return (
+                              <li 
+                                key={p.id} 
+                                className={`py-2 px-4 ${p.isGuest ? 'text-blue-600' : ''}`}
+                              >
+                                <div className="flex justify-between">
+                                  <span>{p.name}</span>
+                                  <span className="invisible">여백 확보</span>
+                                </div>
+                              </li>
+                            );
+                          });
+                        })()}
                       </ul>
                     </div>
                   ))}
@@ -460,17 +471,23 @@ export default function TeamMaker() {
                         {String.fromCharCode(65 + index)}팀
                       </h3>
                       <ul className="space-y-1">
-                        {team
-                          .slice()
-                          .sort((a, b) => a.name.localeCompare(b.name, 'ko'))
-                          .map((participant: Participant) => (
-                            <li 
-                              key={participant.id} 
-                              className={`py-1 px-2 ${participant.isGuest ? 'text-blue-600' : ''}`}
-                            >
-                              {participant.name}
-                            </li>
-                          ))}
+                        {(() => {
+                          const normal = team.filter(p => !p.isGuest).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+                          const guestsInOrder = guests
+                            .map(g => team.find(p => p.isGuest && p.name === g.name))
+                            .filter(Boolean);
+                          return [...normal, ...guestsInOrder].map((participant) => {
+                            const p = participant as Participant;
+                            return (
+                              <li 
+                                key={p.id} 
+                                className={`py-1 px-2 ${p.isGuest ? 'text-blue-600' : ''}`}
+                              >
+                                {p.name}
+                              </li>
+                            );
+                          });
+                        })()}
                       </ul>
                     </div>
                   ))}
