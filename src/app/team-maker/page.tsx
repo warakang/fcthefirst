@@ -393,80 +393,75 @@ export default function TeamMaker() {
               </div>
               
               {/* 화면에 표시되는 팀 결과 */}
-              <div className="bg-white">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {teams.map((team, index) => (
-                    <div 
-                      key={index} 
-                      className={`p-5 rounded-xl ${
-                        index === 0 ? 'bg-red-50' : 
-                        index === 1 ? 'bg-blue-50' : 
-                        index === 2 ? 'bg-green-50' : 
-                        'bg-purple-50'
-                      }`}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-6 w-full">
+                {teams.map((team, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-3 sm:p-5 rounded-xl w-full ${{
+                      0: 'bg-red-50',
+                      1: 'bg-blue-50',
+                      2: 'bg-green-50',
+                    }[index] || 'bg-purple-50'}`}
+                    style={{ maxWidth: '100%' }}
+                  >
+                    <h3 
+                      className={`text-xl font-bold mb-4 ${{
+                        0: 'text-red-600',
+                        1: 'text-blue-600',
+                        2: 'text-green-600',
+                      }[index] || 'text-purple-600'}`}
                     >
-                      <h3 
-                        className={`text-xl font-bold mb-4 ${
-                          index === 0 ? 'text-red-600' : 
-                          index === 1 ? 'text-blue-600' : 
-                          index === 2 ? 'text-green-600' : 
-                          'text-purple-600'
-                        }`}
-                      >
-                        {String.fromCharCode(65 + index)}팀
-                      </h3>
-                      <ul className="space-y-2">
-                        {(() => {
-                          const normal = team.filter(p => !p.isGuest).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-                          const guestsInOrder = guests
-                            .map(g => team.find(p => p.isGuest && p.name === g.name))
-                            .filter(Boolean);
-                          return [...normal, ...guestsInOrder].map((participant) => {
-                            const p = participant as Participant;
-                            return (
-                              <li 
-                                key={p.id} 
-                                className={`py-2 px-4 ${p.isGuest ? 'text-blue-600' : ''}`}
-                              >
-                                <div className="flex justify-between">
-                                  <span>{p.name}</span>
-                                  <span className="invisible">여백 확보</span>
-                                </div>
-                              </li>
-                            );
-                          });
-                        })()}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
+                      {String.fromCharCode(65 + index)}팀
+                    </h3>
+                    <ul className="space-y-2">
+                      {(() => {
+                        const normal = team.filter(p => !p.isGuest).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+                        const guestsInOrder = guests
+                          .map(g => team.find(p => p.isGuest && p.name === g.name))
+                          .filter(Boolean);
+                        return [...normal, ...guestsInOrder].map((participant) => {
+                          const p = participant as Participant;
+                          return (
+                            <li 
+                              key={p.id} 
+                              className={`py-2 px-4 ${p.isGuest ? 'text-blue-600' : ''}`}
+                            >
+                              <div className="flex justify-between">
+                                <span>{p.name}</span>
+                                <span className="invisible">여백 확보</span>
+                              </div>
+                            </li>
+                          );
+                        });
+                      })()}
+                    </ul>
+                  </div>
+                ))}
               </div>
               
               {/* 이미지 저장용 가로 모드 레이아웃 (화면에는 보이지 않음) */}
-              <div 
-                ref={resultRef} 
-                className="fixed left-[-9999px] top-[-9999px] bg-white" 
-                style={{ width: '800px' }}
+              <div
+                ref={resultRef}
+                className="fixed left-[-9999px] top-[-9999px] bg-white"
+                style={{ width: '100vw', maxWidth: '100%', minWidth: '320px' }}
               >
-                <div className="flex flex-row">
+                <div className="flex flex-row w-full">
                   {teams.map((team, index) => (
-                    <div 
-                      key={index} 
-                      className={`p-3 ${
-                        index === 0 ? 'bg-red-50' : 
-                        index === 1 ? 'bg-blue-50' : 
-                        index === 2 ? 'bg-green-50' : 
-                        'bg-purple-50'
-                      }`}
-                      style={{ width: `${800 / teams.length}px` }}
+                    <div
+                      key={index}
+                      className={`p-2 sm:p-3 ${{
+                        0: 'bg-red-50',
+                        1: 'bg-blue-50',
+                        2: 'bg-green-50',
+                      }[index] || 'bg-purple-50'}`}
+                      style={{ width: `calc(100% / ${teams.length})`, minWidth: 0 }}
                     >
-                      <h3 
-                        className={`text-lg font-bold mb-2 ${
-                          index === 0 ? 'text-red-600' : 
-                          index === 1 ? 'text-blue-600' : 
-                          index === 2 ? 'text-green-600' : 
-                          'text-purple-600'
-                        }`}
+                      <h3
+                        className={`text-lg font-bold mb-2 ${{
+                          0: 'text-red-600',
+                          1: 'text-blue-600',
+                          2: 'text-green-600',
+                        }[index] || 'text-purple-600'}`}
                       >
                         {String.fromCharCode(65 + index)}팀
                       </h3>
